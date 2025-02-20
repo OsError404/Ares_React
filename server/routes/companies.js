@@ -1,4 +1,3 @@
-```javascript
 import express from 'express';
 import { authenticate } from '../middleware/auth.js';
 import Company from '../models/Company.js';
@@ -102,4 +101,3 @@ router.delete('/:id', authenticate, async (req, res) => {
 });
 
 export default router;
-```
