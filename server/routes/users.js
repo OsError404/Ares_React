@@ -78,7 +78,17 @@ router.get('/', authenticate, async (req, res) => {
       return res.status(403).json({ message: 'Acceso denegado' });
     }
 
-    const users = await User.find().select('-password');
+    const { search = '' } = req.query; // Extract search query
+    
+    const searchQuery = search ? {
+      $or: [
+        { name: { $regex: search, $options: 'i' } }, // Case-insensitive search by name
+        { email: { $regex: search, $options: 'i' } }, // Case-insensitive search by email
+        { documentNumber: { $regex: search, $options: 'i' } }, // Case-insensitive search by document number
+      ]
+    } : {};
+
+    const users = await User.find(searchQuery).select('-password'); // Return users matching the search
     res.json(users);
   } catch (error) {
     console.error('Error al obtener usuarios:', error);

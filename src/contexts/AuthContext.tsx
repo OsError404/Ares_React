@@ -57,25 +57,35 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  // Fetch token from localStorage on mount, decode, and update state in `useEffect`
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         const decoded = jwtDecode<{ user: User }>(token);
-        dispatch({ type: 'SET_AUTH', payload: { user: decoded.user, token } });
+        if (decoded) {
+          dispatch({ type: 'SET_AUTH', payload: { user: decoded.user, token } });
+        } else {
+          throw new Error('Token decoding failed');
+        }
       } catch (error) {
+        console.error('Token is invalid or expired:', error);
         localStorage.removeItem('token');
         dispatch({ type: 'LOGOUT' });
       }
     } else {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const login = async (credentials: LoginCredentials) => {
-    const { data } = await api.post('/auth/login', credentials);
-    localStorage.setItem('token', data.token);
-    dispatch({ type: 'SET_AUTH', payload: data });
+    try {
+      const { data } = await api.post('/auth/login', credentials);
+      localStorage.setItem('token', data.token);
+      dispatch({ type: 'SET_AUTH', payload: data });
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   const logout = () => {
@@ -84,8 +94,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateProfile = async (data: Partial<User>) => {
-    const response = await api.put<User>('/users/profile', data);
-    dispatch({ type: 'UPDATE_USER', payload: response.data });
+    try {
+      const response = await api.put<User>('/users/profile', data);
+      dispatch({ type: 'UPDATE_USER', payload: response.data });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
 
   return (
@@ -97,8 +111,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
+  // Aquí no se hace un logout, simplemente retorna el contexto.
   return context;
 }
+

@@ -1,4 +1,3 @@
-```typescript
 export interface Company {
   id: string;
   name: string;
@@ -52,4 +51,3 @@ export interface Signature {
   createdAt: Date;
   updatedAt: Date;
 }
-```

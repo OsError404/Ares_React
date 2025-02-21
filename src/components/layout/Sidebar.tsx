@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
   const filteredMenuItems = menuItems.filter(item => 
     item.roles.some(role => user?.roles.includes(role))
   );
-
+  
   const isAdmin = user?.roles.includes('ADMIN');
 
   return (
@@ -69,9 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="text-xl font-bold text-primary"
-            >
-              Sistema de Agendamiento Ares
-            </motion.h1>
+            ></motion.h1>
           )}
           <button
             onClick={onToggle}

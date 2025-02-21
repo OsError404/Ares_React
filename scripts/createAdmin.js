@@ -15,7 +15,10 @@ const createAdmin = async () => {
       name: 'Administrador',
       email: 'admin@example.com',
       password: 'Admin123!',
-      role: 'ADMIN',
+      roles: 'ADMIN',
+      documentNumber:'987665456',
+      documentType : 'CC',
+      locationId : ['606b38a78f54b161274e0abf']
     };
 
     // Verificar si ya existe un usuario con ese email

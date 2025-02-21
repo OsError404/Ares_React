@@ -1,4 +1,3 @@
-```typescript
 export interface Room {
   id: string;
   name: string;
@@ -22,4 +21,3 @@ export interface RoomEvent {
   room: Room;
   user?: User;
 }
-```

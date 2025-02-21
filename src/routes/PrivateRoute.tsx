@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export const PrivateRoute = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  // If user is undefined, logout and clear session
+  useEffect(() => {
+    if (!user) {
+      logout(); // Clear session if user is undefined
+    }
+  }, [user, logout]);
 
   if (isLoading) {
     return (

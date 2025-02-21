@@ -3,15 +3,16 @@ import rateLimit from 'express-rate-limit';
 import { sanitize } from 'express-mongo-sanitize';
 import helmet from 'helmet';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Rate limiting
+// Rate limiting (solo cuenta intentos fallidos de inicio de sesión)
 export const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // límite de 5 intentos
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 4, // límite de 4 intentos
   message: {
-    message: 'Demasiados intentos de inicio de sesión. Por favor, intente más tarde.',
+    message: 'Demasiados intentos de inicio de sesión. Por favor, intente más tarde. ',
   },
+  skipSuccessfulRequests: true, // No contar los intentos exitosos
 });
 
 // Autenticación JWT
